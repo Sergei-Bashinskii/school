@@ -1,46 +1,45 @@
 package ru.hogwarts.school.service;
 
+import jakarta.persistence.EntityExistsException;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
 
-    private final HashMap<Long, Faculty> faculties = new HashMap<>();
-    private long id = 0;
+    private FacultyRepository facultyRepository;
+
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public Faculty createFaculty(Faculty faculty) {
-        faculty.setId(id++);
-        faculties.put(faculty.getId(), faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty readFaculty(long id) {
-        return faculties.get(id);
+        return facultyRepository.findById(id).orElseThrow(EntityExistsException::new);
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        if (!faculties.containsKey(faculty.getId())) {
-            return null;
-        }
-        faculties.put(faculty.getId(), faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty deleteFaculty(long id) {
-        return faculties.remove(id);
+        Faculty faculty = readFaculty(id);
+        facultyRepository.deleteById(id);
+        return faculty;
     }
 
+
     public Collection<Faculty> getFacultiesSameColor(String color) {
-        ArrayList<Faculty> facultiesSameColor = new ArrayList<>();
-        for (Faculty faculty : faculties.values()) {
-            if (Objects.equals(faculty.getColor(), color)) {
-                facultiesSameColor.add(faculty);
-            }
-        }
-        return facultiesSameColor;
+        return facultyRepository.findAll().stream()
+                .filter(f -> f.getColor().equals(color))
+                .collect(Collectors.toList());
     }
 }
