@@ -1,47 +1,49 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.EntityExistsException;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
 
-    private final HashMap<Long, Student> students = new HashMap<>();
-    private long id = 0;
+    private StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public Student createStudent(Student student) {
-        student.setId(id++);
-        students.put(student.getId(), student);
-        return student;
+        return studentRepository.save(student);
     }
 
     public Student readStudent(long id) {
-        return students.get(id);
+        return studentRepository.findById(id).orElseThrow(EntityExistsException::new);
     }
 
     public Student updateStudent(Student student) {
-        if (!students.containsKey(student.getId())) {
-            return null;
-        }
-        students.put(student.getId(), student);
-        return student;
+        return studentRepository.save(student);
     }
 
     public Student deleteStudent(long id) {
-        return students.remove(id);
+        Student student = readStudent(id);
+        studentRepository.deleteById(id);
+        return student;
+    }
+
+    public Collection<Student> getAll() {
+        return studentRepository.findAll();
     }
 
     public Collection<Student> getStudentsSameAge(int ageStudent) {
-        ArrayList<Student> studentsSameAge = new ArrayList<>();
-        for (Student student : students.values()) {
-            if (student.getAge() == ageStudent) {
-                studentsSameAge.add(student);
-            }
-        }
-        return studentsSameAge;
+        return getAll().stream()
+                .filter(s -> s.getAge() == ageStudent)
+                .collect(Collectors.toList());
     }
 }
