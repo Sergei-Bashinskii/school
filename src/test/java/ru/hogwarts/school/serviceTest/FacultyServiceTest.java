@@ -1,62 +1,87 @@
 package ru.hogwarts.school.serviceTest;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 
-class FacultyServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class FacultyServiceTest {
 
+    @Mock
+    private FacultyRepository facultyRepository;
+
+    @InjectMocks
     private FacultyService facultyService;
 
+    private Faculty faculty;
+
     @BeforeEach
-    void setUp() {
-        facultyService = new FacultyService();
+    public void setUp() {
+        faculty = new Faculty();
+        faculty.setId(1L);
+        faculty.setColor("Red");
+        faculty.setName("Gryffindor");
     }
 
     @Test
-    void testCreateFaculty() {
-        Faculty faculty = new Faculty(0, "Слизарин", "Зеленый");
-        Faculty createdFaculty = facultyService.createFaculty(faculty);
-        assertEquals(0, createdFaculty.getId());
-        assertEquals("Слизарин", createdFaculty.getName());
-        assertEquals("Зеленый", createdFaculty.getColor());
+    public void testCreateFaculty() {
+        when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
+
+        Faculty created = facultyService.createFaculty(faculty);
+        assertNotNull(created);
+        verify(facultyRepository).save(faculty);
     }
 
     @Test
-    void testReadFaculty() {
-        Faculty faculty = new Faculty(0, "Гриффиндор,", "Желтый ");
-        facultyService.createFaculty(faculty);
-        Faculty foundFaculty = facultyService.readFaculty(0);
-        assertEquals(faculty, foundFaculty);
+    public void testReadFaculty() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
+
+        Faculty found = facultyService.readFaculty(1L);
+        assertNotNull(found);
+        assertEquals("Red", found.getColor());
     }
 
     @Test
-    void testUpdateFaculty() {
-        Faculty faculty = new Faculty(0, "Когтевран надо изменить", "Синий");
-        facultyService.createFaculty(faculty);
-        faculty.setName("Когтевран");
-        Faculty updatedFaculty = facultyService.updateFaculty(faculty);
-        assertEquals("Когтевран", updatedFaculty.getName());
+    public void testUpdateFaculty() {
+        when(facultyRepository.save(faculty)).thenReturn(faculty);
+
+        Faculty updated = facultyService.updateFaculty(faculty);
+        assertNotNull(updated);
+        verify(facultyRepository).save(faculty);
     }
 
     @Test
-    void testDeleteFaculty() {
-        Faculty faculty = new Faculty(0, "Гриффиндор", "Желтый");
-        facultyService.createFaculty(faculty);
-        facultyService.deleteFaculty(0);
-        assertNull(facultyService.readFaculty(0));
+    public void testDeleteFaculty() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
+        doNothing().when(facultyRepository).deleteById(1L);
+
+        Faculty deleted = facultyService.deleteFaculty(1L);
+        assertNotNull(deleted);
+        verify(facultyRepository).deleteById(1L);
     }
 
     @Test
-    void testGetFacultiesSameColor() {
-        facultyService.createFaculty(new Faculty(0, "Слизарин начинающий", "Зеленый"));
-        facultyService.createFaculty(new Faculty(1, "Слизарин средний", "Зеленый"));
-        facultyService.createFaculty(new Faculty(2, "Слизарин конец", "Зеленый"));
+    public void testGetFacultiesSameColor() {
+        List<Faculty> faculties = new ArrayList<>();
+        faculties.add(faculty);
+        when(facultyRepository.findAll()).thenReturn(faculties);
 
-        Collection<Faculty> greenFaculties = facultyService.getFacultiesSameColor("Зеленый");
-        assertEquals(3, greenFaculties.size());
+        Collection<Faculty> result = facultyService.getFacultiesSameColor("Red");
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
     }
 }
