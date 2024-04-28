@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.StudentService;
+import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 @ExtendWith(MockitoExtension.class)
-public class StudentServiceTest {
+public class StudentServiceImplTest {
 
     @Mock
     private StudentRepository studentRepository;
 
     @InjectMocks
-    private StudentService studentService;
+    private StudentServiceImpl studentServiceImpl;
 
     private Student student;
 
@@ -41,7 +41,7 @@ public class StudentServiceTest {
     public void testCreateStudent() {
         when(studentRepository.save(any(Student.class))).thenReturn(student);
 
-        Student created = studentService.createStudent(student);
+        Student created = studentServiceImpl.createStudent(student);
         assertNotNull(created);
         verify(studentRepository).save(student);
     }
@@ -50,7 +50,7 @@ public class StudentServiceTest {
     public void testReadStudent() {
         when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
-        Student found = studentService.readStudent(1L);
+        Student found = studentServiceImpl.getStudent(1L);
         assertNotNull(found);
         assertEquals("Harry Potter", found.getName());
     }
@@ -59,7 +59,7 @@ public class StudentServiceTest {
     public void testUpdateStudent() {
         when(studentRepository.save(student)).thenReturn(student);
 
-        Student updated = studentService.updateStudent(student);
+        Student updated = studentServiceImpl.updateStudent(student);
         assertNotNull(updated);
         verify(studentRepository).save(student);
     }
@@ -69,7 +69,7 @@ public class StudentServiceTest {
         when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
         doNothing().when(studentRepository).deleteById(1L);
 
-        Student deleted = studentService.deleteStudent(1L);
+        Student deleted = studentServiceImpl.deleteStudent(1L);
         assertNotNull(deleted);
         verify(studentRepository).deleteById(1L);
     }
@@ -80,7 +80,7 @@ public class StudentServiceTest {
         students.add(student);
         when(studentRepository.findAll()).thenReturn(students);
 
-        Collection<Student> allStudents = studentService.getAll();
+        Collection<Student> allStudents = studentServiceImpl.allStudents();
         assertFalse(allStudents.isEmpty());
         assertEquals(1, allStudents.size());
     }
@@ -91,7 +91,7 @@ public class StudentServiceTest {
         students.add(student);
         when(studentRepository.findAll()).thenReturn(students);
 
-        Collection<Student> result = studentService.getStudentsSameAge(15);
+        Collection<Student> result = studentServiceImpl.getStudentsSameAge(15);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
     }

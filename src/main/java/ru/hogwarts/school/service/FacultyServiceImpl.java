@@ -6,17 +6,18 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.service.impl.FacultyService;
 
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class FacultyService {
+public class FacultyServiceImpl implements FacultyService {
 
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
-    public FacultyService(FacultyRepository facultyRepository) {
+    public FacultyServiceImpl(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
 
@@ -24,18 +25,22 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty readFaculty(long id) {
-        return facultyRepository.findById(id).orElseThrow(EntityExistsException::new);
+    public Faculty getFaculty(Long id) {
+        return facultyRepository.getReferenceById(id);
     }
 
     public Faculty updateFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty deleteFaculty(long id) {
-        Faculty faculty = readFaculty(id);
+    public Faculty deleteFaculty(Long id) {
+        Faculty faculty = getFaculty(id);
         facultyRepository.deleteById(id);
         return faculty;
+    }
+
+    public Collection<Faculty> allFaculties() {
+        return facultyRepository.findAll();
     }
 
     public List<Faculty> findFacultiesByNameOrColor(String search) {
@@ -54,4 +59,5 @@ public class FacultyService {
                 .orElseThrow(() -> new EntityNotFoundException("Факультет не найден " + facultyId));
         return faculty.getStudents();
     }
+
 }

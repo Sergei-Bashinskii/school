@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
-import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.service.FacultyServiceImpl;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 @ExtendWith(MockitoExtension.class)
-public class FacultyServiceTest {
+public class FacultyServiceImplTest {
 
     @Mock
     private FacultyRepository facultyRepository;
 
     @InjectMocks
-    private FacultyService facultyService;
+    private FacultyServiceImpl facultyServiceImpl;
 
     private Faculty faculty;
 
@@ -41,7 +41,7 @@ public class FacultyServiceTest {
     public void testCreateFaculty() {
         when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
 
-        Faculty created = facultyService.createFaculty(faculty);
+        Faculty created = facultyServiceImpl.createFaculty(faculty);
         assertNotNull(created);
         verify(facultyRepository).save(faculty);
     }
@@ -50,7 +50,7 @@ public class FacultyServiceTest {
     public void testReadFaculty() {
         when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
 
-        Faculty found = facultyService.readFaculty(1L);
+        Faculty found = facultyServiceImpl.getFaculty(1L);
         assertNotNull(found);
         assertEquals("Red", found.getColor());
     }
@@ -59,7 +59,7 @@ public class FacultyServiceTest {
     public void testUpdateFaculty() {
         when(facultyRepository.save(faculty)).thenReturn(faculty);
 
-        Faculty updated = facultyService.updateFaculty(faculty);
+        Faculty updated = facultyServiceImpl.updateFaculty(faculty);
         assertNotNull(updated);
         verify(facultyRepository).save(faculty);
     }
@@ -69,7 +69,7 @@ public class FacultyServiceTest {
         when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
         doNothing().when(facultyRepository).deleteById(1L);
 
-        Faculty deleted = facultyService.deleteFaculty(1L);
+        Faculty deleted = facultyServiceImpl.deleteFaculty(1L);
         assertNotNull(deleted);
         verify(facultyRepository).deleteById(1L);
     }
@@ -80,7 +80,7 @@ public class FacultyServiceTest {
         faculties.add(faculty);
         when(facultyRepository.findAll()).thenReturn(faculties);
 
-        Collection<Faculty> result = facultyService.getFacultiesSameColor("Red");
+        Collection<Faculty> result = facultyServiceImpl.getFacultiesSameColor("Red");
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
     }
