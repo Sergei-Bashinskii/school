@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class Student {
 
-    private long id;
+    private final Long id;
     private String name;
-    private int age;
+    private Integer age;
 
     public Student(long id, String name, int age) {
         this.id = id;
@@ -18,10 +18,6 @@ public class Student {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -30,7 +26,7 @@ public class Student {
         this.name = name;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 

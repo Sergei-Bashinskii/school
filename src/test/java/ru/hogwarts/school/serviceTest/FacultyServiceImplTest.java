@@ -3,23 +3,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.service.FacultyServiceImpl;
 
 import java.util.Collection;
 
-class FacultyServiceTest {
+class FacultyServiceImplTest {
 
-    private FacultyService facultyService;
+    private FacultyServiceImpl facultyServiceImpl;
 
     @BeforeEach
     void setUp() {
-        facultyService = new FacultyService();
+        facultyServiceImpl = new FacultyServiceImpl();
     }
 
     @Test
     void testCreateFaculty() {
         Faculty faculty = new Faculty(0, "Слизарин", "Зеленый");
-        Faculty createdFaculty = facultyService.createFaculty(faculty);
+        Faculty createdFaculty = facultyServiceImpl.createFaculty(faculty);
         assertEquals(0, createdFaculty.getId());
         assertEquals("Слизарин", createdFaculty.getName());
         assertEquals("Зеленый", createdFaculty.getColor());
@@ -28,35 +28,35 @@ class FacultyServiceTest {
     @Test
     void testReadFaculty() {
         Faculty faculty = new Faculty(0, "Гриффиндор,", "Желтый ");
-        facultyService.createFaculty(faculty);
-        Faculty foundFaculty = facultyService.readFaculty(0);
+        facultyServiceImpl.createFaculty(faculty);
+        Faculty foundFaculty = facultyServiceImpl.findFaculty(0L);
         assertEquals(faculty, foundFaculty);
     }
 
     @Test
     void testUpdateFaculty() {
         Faculty faculty = new Faculty(0, "Когтевран надо изменить", "Синий");
-        facultyService.createFaculty(faculty);
+        facultyServiceImpl.createFaculty(faculty);
         faculty.setName("Когтевран");
-        Faculty updatedFaculty = facultyService.updateFaculty(faculty);
+        Faculty updatedFaculty = facultyServiceImpl.editFaculty(faculty);
         assertEquals("Когтевран", updatedFaculty.getName());
     }
 
     @Test
     void testDeleteFaculty() {
         Faculty faculty = new Faculty(0, "Гриффиндор", "Желтый");
-        facultyService.createFaculty(faculty);
-        facultyService.deleteFaculty(0);
-        assertNull(facultyService.readFaculty(0));
+        facultyServiceImpl.createFaculty(faculty);
+        facultyServiceImpl.deleteFaculty(0L);
+        assertNull(facultyServiceImpl.findFaculty(0L));
     }
 
     @Test
     void testGetFacultiesSameColor() {
-        facultyService.createFaculty(new Faculty(0, "Слизарин начинающий", "Зеленый"));
-        facultyService.createFaculty(new Faculty(1, "Слизарин средний", "Зеленый"));
-        facultyService.createFaculty(new Faculty(2, "Слизарин конец", "Зеленый"));
+        facultyServiceImpl.createFaculty(new Faculty(0, "Слизарин начинающий", "Зеленый"));
+        facultyServiceImpl.createFaculty(new Faculty(1, "Слизарин средний", "Зеленый"));
+        facultyServiceImpl.createFaculty(new Faculty(2, "Слизарин конец", "Зеленый"));
 
-        Collection<Faculty> greenFaculties = facultyService.getFacultiesSameColor("Зеленый");
+        Collection<Faculty> greenFaculties = facultyServiceImpl.getAllFaculties();
         assertEquals(3, greenFaculties.size());
     }
 }
