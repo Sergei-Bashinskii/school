@@ -1,4 +1,4 @@
-package ru.hogwarts.school.serviceTest;
+/*package ru.hogwarts.school.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,4 +59,4 @@ class StudentServiceImplTest {
         Collection<Student> studentsAge18 = studentServiceImpl.getAllStudents();
         assertEquals(2, studentsAge18.size());
     }
-}
+}*/

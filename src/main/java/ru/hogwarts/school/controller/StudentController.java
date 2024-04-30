@@ -35,8 +35,9 @@ public class StudentController {
 
     @GetMapping("get-by-age")
     @Operation(summary = "Получение студентов по возрасту")
-    public Collection<Student> getByAge(@RequestParam Integer age) {
-        return studentService.getByAge(age);
+    public Collection<Student> getByAge(@RequestParam Integer minAge,
+                                        @RequestParam Integer maxAge) {
+        return studentService.getByAgeBetween(minAge, maxAge);
     }
 
     @PostMapping

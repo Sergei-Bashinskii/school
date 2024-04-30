@@ -35,8 +35,9 @@ public class FacultyController {
 
     @GetMapping("get-by-color")
     @Operation(summary = "Получение факультетов по цвету")
-    public Collection<Faculty> getByColor(@RequestParam String color) {
-        return facultyService.getByColor(color);
+    public Collection<Faculty> getByColor(@RequestParam String color,
+                                          @RequestParam String name) {
+        return facultyService.getByColorOrName(color, name);
     }
 
     @PostMapping

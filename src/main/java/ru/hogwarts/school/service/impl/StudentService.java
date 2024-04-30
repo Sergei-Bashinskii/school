@@ -16,5 +16,5 @@ public interface StudentService {
 
     Collection<Student> getAllStudents();
 
-    Collection<Student> getByAge(Integer age);
+    Collection<Student> getByAgeBetween(Integer minAge, Integer maxAge);
 }
