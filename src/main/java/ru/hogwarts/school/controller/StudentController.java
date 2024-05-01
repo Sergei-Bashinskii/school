@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentServiceImpl;
 import ru.hogwarts.school.service.impl.StudentService;
@@ -12,7 +13,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("student")
-@Tag(name = "API для работы со студентами.")
+@Tag(name = "API для работы со студентами")
 public class StudentController {
 
     private final StudentService studentService;
@@ -25,6 +26,12 @@ public class StudentController {
     @Operation(summary = "Получение студента по id")
     public Student getStudentInfo(@PathVariable Long id) {
         return studentService.findStudent(id);
+    }
+
+    @GetMapping("faculty/{studentId}")
+    @Operation(summary = "Получение факультета студента по его id")
+    public Faculty getFacultyByIdStudent(@PathVariable Long studentId) {
+        return studentService.getFacultyByIdStudent(studentId);
     }
 
     @GetMapping("all")

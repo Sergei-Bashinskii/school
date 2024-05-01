@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("faculty")
-@Tag(name = "API для работы с факультетами.")
+@Tag(name = "API для работы с факультетами")
 public class FacultyController {
 
     private final FacultyService facultyService;
@@ -25,6 +25,12 @@ public class FacultyController {
     @Operation(summary = "Получение факультета по id")
     public Faculty getFacultyInfo(@PathVariable Long id) {
         return facultyService.findFaculty(id);
+    }
+
+    @GetMapping("students/{facultyId}")
+    @Operation(summary = "Получение студентов факультета")
+    public Collection<Student> getStudentFaculty(@PathVariable Long facultyId) {
+        return facultyService.getStudentFaculty(facultyId);
     }
 
     @GetMapping
