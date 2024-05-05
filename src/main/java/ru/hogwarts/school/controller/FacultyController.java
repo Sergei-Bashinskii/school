@@ -33,7 +33,7 @@ public class FacultyController {
         return facultyService.getStudentFaculty(facultyId);
     }
 
-    @GetMapping
+    @GetMapping("all")
     @Operation(summary = "Получение всех факультетов")
     public Collection<Faculty> getAllFaculties() {
         return facultyService.getAllFaculties();
