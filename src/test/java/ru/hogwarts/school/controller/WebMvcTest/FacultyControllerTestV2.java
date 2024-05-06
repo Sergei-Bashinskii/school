@@ -112,6 +112,45 @@ public class FacultyControllerTestV2 {
                 .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR));
     }
 
+    @Test
+    public void testSaveFaculty() throws Exception {
+        final String name = "Banda";
+        final String color = "Green";
+        final long id = 991;
+
+        JSONObject facultyObject = new JSONObject();
+        facultyObject.put("name",name);
+        facultyObject.put("color", color);
+
+        Faculty faculty = new Faculty();
+        faculty.setId(id);
+        faculty.setName(name);
+        faculty.setColor(color);
+
+        when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(faculty));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/faculty")
+                        .content(facultyObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.color").value(color))
+        ;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/" + id)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.color").value(color))
+        ;
+    }
+
     @Test   //Обновление факультета
     public void testEditFaculty() throws Exception{
 

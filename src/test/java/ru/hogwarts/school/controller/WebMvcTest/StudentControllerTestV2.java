@@ -79,7 +79,7 @@ public class StudentControllerTestV2 {
                 .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS)));
     }
 
-    @Test   //ППолучение студентов по возрасту
+    @Test   //Получение студентов по возрасту
     public void TesGetByAge() throws Exception {
 
         Integer minAge = 10;
@@ -119,6 +119,45 @@ public class StudentControllerTestV2 {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME))
                 .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE));
+    }
+
+    @Test
+    public void testSaveStudent() throws Exception {
+        final String name = "Vova";
+        final int age = 12;
+        final long id = 991;
+
+        JSONObject studentObject = new JSONObject();
+        studentObject.put("name",name);
+        studentObject.put("age", age);
+
+        Student student = new Student();
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
+        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(student));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/student")
+                        .content(studentObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.age").value(age))
+        ;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/" + id)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.age").value(age))
+        ;
     }
 
     @Test   //Обновление студента

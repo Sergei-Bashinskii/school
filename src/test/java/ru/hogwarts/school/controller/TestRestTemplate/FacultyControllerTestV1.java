@@ -56,6 +56,9 @@ public class FacultyControllerTestV1 {
     @Test   //Получение студентов факультета
     public void getStudentFacultyTest() {
 
+        facultyService.createFaculty(MOCK_FACULTY);
+        MOCK_FACULTY.setStudent(MOCK_STUDENTS);
+
         List<Student> students = testRestTemplate.exchange(
                 "http://localhost:" + port + "/faculty/students/" + MOCK_FACULTY_ID,
                 HttpMethod.GET,
