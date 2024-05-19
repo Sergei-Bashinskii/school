@@ -3,6 +3,7 @@ package ru.hogwarts.school.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,6 +50,13 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)
                 .body(avatar.getDate());
+    }
+
+    @GetMapping(value = "/avatars", params = {"page", "size"})
+    @Operation(summary = "Получить список аватар постранично")
+    public ResponseEntity<Page<Avatar>> getAvatarsByPage(@RequestParam int page, @RequestParam int size) {
+        Page<Avatar> avatars = avatarService.getAvatarsByPage(page, size);
+        return ResponseEntity.ok(avatars);
     }
 
     @GetMapping(value = "/{id}/avatar-from-file")
