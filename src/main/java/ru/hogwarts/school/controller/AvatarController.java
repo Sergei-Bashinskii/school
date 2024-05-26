@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("avatar")
@@ -50,13 +51,6 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)
                 .body(avatar.getDate());
-    }
-
-    @GetMapping(value = "/avatars", params = {"page", "size"})
-    @Operation(summary = "Получить список аватар постранично")
-    public ResponseEntity<Page<Avatar>> getAvatarsByPage(@RequestParam int page, @RequestParam int size) {
-        Page<Avatar> avatars = avatarService.getAvatarsByPage(page, size);
-        return ResponseEntity.ok(avatars);
     }
 
     @GetMapping(value = "/{id}/avatar-from-file")

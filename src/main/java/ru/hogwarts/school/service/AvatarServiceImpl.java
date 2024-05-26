@@ -1,8 +1,6 @@
 package ru.hogwarts.school.service;
 
-import org.springdoc.core.converters.models.Pageable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +14,7 @@ import ru.hogwarts.school.service.impl.StudentService;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -68,12 +67,6 @@ public class AvatarServiceImpl implements AvatarService {
             avatarRepository.save(avatar);
         }
     }
-
-    public Page<Avatar> getAvatarsByPage(int pageNumber, int pageSize) {
-        PageRequest pageable = PageRequest.of(pageNumber, pageSize);
-        return avatarRepository.findAll(pageable);
-    }
-
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }

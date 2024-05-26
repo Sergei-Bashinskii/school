@@ -12,7 +12,4 @@ public interface AvatarRepository extends JpaRepository<Avatar, Long> {
 
     Optional<Avatar> findByStudentId(Long studentId);
 
-    List<Avatar> getAvatarsByPage(int pageNumber, int pageSize);
-
-    Page findAll(Pageable pageable);
 }
