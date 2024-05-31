@@ -9,6 +9,8 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.impl.FacultyService;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("faculty")
@@ -64,4 +66,18 @@ public class FacultyController {
         return facultyService.deleteFaculty(id);
     }
 
+    @GetMapping("/Самое длинное название")
+    public String getLongestFacultyName() {
+        return facultyService.getAllFaculties().stream()
+                .max(Comparator.comparing(f -> f.getName().length()))
+                .map(Faculty::getName)
+                .orElse("No faculties found");
+    }
+
+    @GetMapping("/Целочисленное значение")
+    public int calculateSum() {
+        return Stream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0, Integer::sum);
+    }
 }

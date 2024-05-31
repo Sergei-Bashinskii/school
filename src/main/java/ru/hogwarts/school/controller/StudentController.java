@@ -10,6 +10,7 @@ import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.List;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -95,5 +96,19 @@ public class StudentController {
     @Operation(summary = "Пять последних студентов")
     public Collection<Student> getLastFiveStudents() {
         return studentServiceImpl.getLastFiveStudents();
+    }
+
+    @GetMapping("/Имена начинающиеся на букву А")
+    public List<String> getStudentNamesStartingWithA() {
+        return studentServiceImpl.getAllStudents().stream()
+                .filter(student -> student.getName().toUpperCase().startsWith("А"))
+                .map(student -> student.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/Средний возраст")
+    public Integer getAverageAge() {
+        return studentServiceImpl.averageAgeStudents();
     }
 }
