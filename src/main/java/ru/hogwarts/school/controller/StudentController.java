@@ -8,8 +8,12 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
@@ -110,5 +114,37 @@ public class StudentController {
     @GetMapping("/Средний возраст")
     public Integer getAverageAge() {
         return studentServiceImpl.averageAgeStudents();
+    }
+
+    @GetMapping("/print-parallel")
+    public void printStudentNamesInParallel() {
+        List<Student> students = new ArrayList<>(studentServiceImpl.getAllStudents());
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(() -> System.out.println(students.get(0).getName()));
+        executor.submit(() -> System.out.println(students.get(1).getName()));
+        executor.shutdown();
+
+        CompletableFuture.runAsync(() -> System.out.println(students.get(2).getName()));
+        CompletableFuture.runAsync(() -> System.out.println(students.get(3).getName())).join();
+
+        CompletableFuture.runAsync(() -> System.out.println(students.get(4).getName()));
+        CompletableFuture.runAsync(() -> System.out.println(students.get(5).getName())).join();
+    }
+
+    @GetMapping("/print-synchronized")
+    public synchronized void printStudentNamesInSync() {
+        List<Student> students = new ArrayList<>(studentServiceImpl.getAllStudents());
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+
+        CompletableFuture.runAsync(() -> printSync(students.get(2).getName()));
+        CompletableFuture.runAsync(() -> printSync(students.get(3).getName())).join();
+
+        CompletableFuture.runAsync(() -> printSync(students.get(4).getName()));
+        CompletableFuture.runAsync(() -> printSync(students.get(5).getName())).join();
+    }
+
+    private synchronized void printSync(String name) {
+        System.out.println(name);
     }
 }

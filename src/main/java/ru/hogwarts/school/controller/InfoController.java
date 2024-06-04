@@ -1,4 +1,4 @@
-package ru.hogwarts.school.controller;
+/*package ru.hogwarts.school.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,4 +19,4 @@ public class InfoController {
     public String getServerPort() {
         return "Приложение запущено на порту: " + portValue;
     }
-}
+}*/

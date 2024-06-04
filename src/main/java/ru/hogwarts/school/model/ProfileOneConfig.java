@@ -1,4 +1,4 @@
-package ru.hogwarts.school.model;
+/*package ru.hogwarts.school.model;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,4 +15,4 @@ public class ProfileOneConfig {
     public String portValue() {
         return serverPort;
     }
-}
+}*/
