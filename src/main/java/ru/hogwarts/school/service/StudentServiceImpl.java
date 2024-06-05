@@ -9,7 +9,12 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.impl.StudentService;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -75,5 +80,27 @@ public class StudentServiceImpl implements StudentService {
     public Collection<Student> getLastFiveStudents() {
         logger.info("A method was called to get the last five students of the students");
         return studentRepository.getLastFiveStudents();
+    }
+
+    public void printStudentNamesInParallel() {
+        List<Student> students = new ArrayList<>(getAllStudents());
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(() -> System.out.println(students.get(0).getName()));
+        executor.submit(() -> System.out.println(students.get(1).getName()));
+        executor.shutdown();
+
+        CompletableFuture.runAsync(() -> System.out.println(students.get(2).getName()));
+        CompletableFuture.runAsync(() -> System.out.println(students.get(3).getName())).join();
+
+        CompletableFuture.runAsync(() -> System.out.println(students.get(4).getName()));
+        CompletableFuture.runAsync(() -> System.out.println(students.get(5).getName())).join();;
+    }
+
+    public synchronized void printStudentNamesInSync() {
+        List<Student> students = new ArrayList<>(getAllStudents());
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+        System.out.println(students.get(2).getName());
+        System.out.println(students.get(3).getName());
     }
 }
