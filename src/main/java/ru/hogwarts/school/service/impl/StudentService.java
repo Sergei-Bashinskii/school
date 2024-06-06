@@ -27,4 +27,8 @@ public interface StudentService {
     Integer averageAgeStudents();
 
     Collection<Student> getLastFiveStudents();
+
+    void printStudentNamesInParallel();
+
+    public void printStudentNamesInSync();
 }

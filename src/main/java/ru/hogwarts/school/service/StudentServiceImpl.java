@@ -23,6 +23,8 @@ public class StudentServiceImpl implements StudentService {
 
     private final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
+    private int count = 0;
+
     public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
@@ -96,11 +98,25 @@ public class StudentServiceImpl implements StudentService {
         CompletableFuture.runAsync(() -> System.out.println(students.get(5).getName())).join();;
     }
 
-    public synchronized void printStudentNamesInSync() {
+    public void printStudentNamesInSync() {
+
+        designsForSyncStudentNames(0);
+        designsForSyncStudentNames(1);
+
+        new Thread(() -> {
+                designsForSyncStudentNames(2);
+                designsForSyncStudentNames(3);
+        }).start();
+
+        new Thread(() -> {
+                designsForSyncStudentNames(4);
+                designsForSyncStudentNames(5);
+        }).start();
+    }
+
+    public synchronized void designsForSyncStudentNames(int number) {
         List<Student> students = new ArrayList<>(getAllStudents());
-        System.out.println(students.get(0).getName());
-        System.out.println(students.get(1).getName());
-        System.out.println(students.get(2).getName());
-        System.out.println(students.get(3).getName());
+        System.out.println(students.get(number).getName());
+        count++;
     }
 }
