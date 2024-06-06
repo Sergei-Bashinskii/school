@@ -23,8 +23,6 @@ public class StudentServiceImpl implements StudentService {
 
     private final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
-    private int count = 0;
-
     public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
@@ -117,6 +115,5 @@ public class StudentServiceImpl implements StudentService {
     public synchronized void designsForSyncStudentNames(int number) {
         List<Student> students = new ArrayList<>(getAllStudents());
         System.out.println(students.get(number).getName());
-        count++;
     }
 }
